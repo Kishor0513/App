@@ -30,4 +30,4 @@ A web application that classifies Dahlia flower images using a pre-trained CNN m
 
 - The model was trained on various Dahlia flower types.
 - For best results, use clear images of Dahlia flowers with minimal background distractions.
-- The input images are resized to 224x224 pixels for classification.
+- The input images are resized to 300x300 pixels for classification.
