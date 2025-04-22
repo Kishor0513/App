@@ -13,13 +13,20 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 import gdown
 
 # URL from Google Drive (must be shareable)
-url = "https://drive.google.com/file/d/1jyxcjacRq-gAAxX-G55_3trQycDeVDHA/view?usp=sharing"
+gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", "dahlia_vgg_final.h5", quiet=False)
+
+
 output = "dahlia_vgg_final.h5"
 
 if not os.path.exists(output):
-    gdown.download(url, output, quiet=False)
+    import gdown
+    gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", output, quiet=False)
 
-model = load_model(output)
+try:
+    model = load_model(output)
+    print("✅ Model loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading model: {e}")
 
 
 # Dahlia class names (update these based on your model training)
