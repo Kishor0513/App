@@ -11,6 +11,7 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
 # import gdown
 
+<<<<<<< HEAD
 # # URL from Google Drive (must be shareable)
 # gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", "dahlia_vgg_final.h5", quiet=False)
 
@@ -28,6 +29,23 @@ model = load_model('dahlia_vgg_final.h5')
 #     print("✅ Model loaded successfully!")
 # except Exception as e:
 #     print(f"❌ Error loading model: {e}")
+=======
+# URL from Google Drive (must be shareable)
+gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", "dahlia_vgg_final.h5", quiet=False)
+
+
+output = "dahlia_vgg_final.h5"
+
+if not os.path.exists(output):
+    import gdown
+    gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", output, quiet=False)
+
+try:
+    model = load_model(output)
+    print("✅ Model loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading model: {e}")
+>>>>>>> 5d74e14d764f6bb773d1b9a0ee2940bf102001bc
 
 
 # Dahlia class names (update these based on your model training)
