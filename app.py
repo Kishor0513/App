@@ -1,5 +1,4 @@
 import os
-import gdown
 from flask import Flask, render_template, request, redirect, url_for
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -10,27 +9,29 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
-import gdown
+# import gdown
 
-# URL from Google Drive (must be shareable)
-gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", "dahlia_vgg_final.h5", quiet=False)
+# # URL from Google Drive (must be shareable)
+# gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", "dahlia_vgg_final.h5", quiet=False)
 
 
-output = "dahlia_vgg_final.h5"
+# output = "dahlia_vgg_final.h5"
 
-if not os.path.exists(output):
-    import gdown
-    gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", output, quiet=False)
+# if not os.path.exists(output):
+#     import gdown
+#     gdown.download("https://drive.google.com/uc?id=1jyxcjacRq-gAAxX-G55_3trQycDeVDHA", output, quiet=False)
 
-try:
-    model = load_model(output)
-    print("✅ Model loaded successfully!")
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
+model = load_model('dahlia_vgg_final.h5')
+
+# try:
+#     model = load_model(output)
+#     print("✅ Model loaded successfully!")
+# except Exception as e:
+#     print(f"❌ Error loading model: {e}")
 
 
 # Dahlia class names (update these based on your model training)
-class_names = ['Anemone Dahlia', 'Ball Dahlia', 'Cactus Dahlia', 'Collarate Dahlia', 'Waterlily Dahlia']
+class_names = ['Anemone Dahlia', 'Ball Dahlia', 'Cactus Dahlia', 'Collarate Dahlia', 'Waterlily Dahlia', 'Non Dahlia','Object']
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -55,7 +56,7 @@ def predict():
             file.save(filepath)
 
             # Load and preprocess image
-            img = image.load_img(filepath, target_size=(300, 300))  # Change size if needed
+            img = image.load_img(filepath, target_size=(224, 224))  
             img_array = image.img_to_array(img)
             img_array = np.expand_dims(img_array, axis=0) / 255.0
 
@@ -65,10 +66,16 @@ def predict():
             predicted_class = class_names[np.argmax(prediction)]
             
             # Check if the confidence is high enough to be a dahlia
-            if confidence < 0.6:  # Threshold can be adjusted based on testing
-                return render_template('result.html', image_file=filepath, prediction="No flower detected")
+            if confidence < 0.8:  
+                return render_template('result.html', 
+                                    image_file=filepath, 
+                                    prediction="Not Recognized", 
+                                    confidence=f"{confidence*100:.2f}%")
             
-            return render_template('result.html', image_file=filepath, prediction=predicted_class)
+            return render_template('result.html', 
+                                image_file=filepath, 
+                                prediction=predicted_class,
+                                confidence=f"{confidence*100:.2f}%")
 
         return "Invalid file type"
 
